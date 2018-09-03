@@ -1,0 +1,52 @@
+package pacfake;
+
+public class pacfake {
+	static char mapa[][] = {
+		{'|', '-', '-', '-', '-', '-', '-', '-', '-', '|'},
+		{'|', '.', '.', '.', '|', '.', '.', '-', '.', '|'},
+		{'|', '.', '.', '-', '|', '.', '@', '-', '.', '|'},
+		{'|', '.', '.', '.', '.', '.', '.', '-', '.', '|'},
+		{'|', '-', '-', '-', '-', '-', '-', '-', '-', '|'},
+	}
+
+	public static void exibirMapa(){
+		for (int i=0; i<5; i++) {
+			for (int j=0, j<10; j++){
+			System.out.print(mapa[i][j]);
+			}
+		System.out.println("");
+		}
+	}
+
+	static int linha;
+	static int coluna;
+  
+  public static void encontrarPosicao(){
+    for (int i=0; i<5; i++){
+      for (int j=0; j<10; j++)){
+        if(mapa[i][j] =='@') {
+          linha =i;
+          coluna = j;
+          }
+        }
+      }
+    }
+  
+  public static boolean ehParede(char c){
+    if (c=='|'|| c=='-'){
+      return true;
+      } else {
+        return false;
+        }
+  }
+  
+  public static void limpaTela(){
+    for( int i=0;i<10; i++) {
+      System.out.println("");
+    }
+  }
+  
+
+	public static void main(String[] args) {
+	}
+}

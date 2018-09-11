@@ -39,7 +39,7 @@ public:
     ostream &imprimir(ostream &O) const;
     istream &ler(istream &I);
     inline ostream &salvar(ostream &O) const {return imprimir(O);}
-    
+
 };
 
 class CD: public Produto
@@ -53,7 +53,7 @@ public:
     ostream &imprimir(ostream &O) const;
     istream &ler(istream &I);
     inline ostream &salvar(ostream &O) const {return imprimir(O);}
-    
+
 };
 
 class DVD: public Produto
@@ -74,20 +74,56 @@ class ListaLivro
 private:
     Livro *x;
     unsigned N;
-    void criar(unsigned numL);
-    void copiar(const ListaLivro &L);
-    void limpar();
+    //void criar(unsigned numL);
+    //void copiar(const ListaLivro &L);
+    //void limpar();
 public:
     inline ListaLivro(): N(0), x(NULL) {}
     inline ListaLivro(const ListaLivro &L) {copiar(L);}
     inline ~ListaLivro(void) {limpar();}
     inline void operator=(const ListaLivro &L) {if (this!=&L) {limpar(); copiar(L);}}
-    void incluir(const Livro &L);
+    //void incluir(const Livro &V);
     void excluir(unsigned id);
-    void imprimir() const;
+    //void imprimir() const;
     void ler(istream &I);
     void salvar(ostream &O) const;
 };
+
+void ListaLivro::criar(unsigned numL)
+{
+  N = numL;
+  if (N>0) x = new Livro[N];
+  else x = NULL;
+}
+
+void ListaLivro::copiar(const ListaLivro &L)
+{
+  criar(L.N);
+  for (unsigned i=0; i<N; i++) x[i]=L.x[i];
+}
+
+void ListaLivro::incluir(const Livro &V)
+{
+  Livro *prov = new Livro[N+1];
+
+  for (unsigned i=0; i<N; i++) prov[i]=x[i];
+  prov[N] = L;
+  if (x!=NULL) delete[] x;
+  N++;
+  x = prov;
+}
+
+void ListaLivro::limpar()
+{
+  if (x!=NULL) delete[] x;
+  N = 0;
+  x = NULL;
+}
+
+void ListaLivro::imprimir() const
+{
+  for (unsigned i=0; i<N; i++) cout << x[i] << endl;
+}
 
 // =========================================
 // Inclua aqui as classes ListaCD e ListaDVD
@@ -106,7 +142,7 @@ public:
     inline ListaCD(const ListaCD &L) {copiar(L);}
     inline ~ListaCD(void) {limpar();}
     inline void operator=(const ListaCD &L) {if (this!=&L) {limpar(); copiar(L);}}
-    void incluir(const CD &L);
+    void incluir(const CD &C);
     void excluir(unsigned id);
     void imprimir() const;
     void ler(istream &I);
@@ -126,7 +162,7 @@ public:
     inline ListaDVD(const ListaDVD &L) {copiar(L);}
     inline ~ListaDVD(void) {limpar();}
     inline void operator=(const ListaDVD &L) {if (this!=&L) {limpar(); copiar(L);}}
-    void incluir(const DVD &L);
+    void incluir(const DVD &D);
     void excluir(unsigned id);
     void imprimir() const;
     void ler(istream &I);
@@ -155,7 +191,7 @@ public:
 int main()
 {
     Loja X;
-    Livro L;
+    Livro V;
     CD C;
     DVD D;
     string A;
@@ -194,7 +230,7 @@ int main()
             break;
         case 1:
             cout << "LIVRO>>\n";
-            cin >> L;
+            cin >> V;
             break;
         case 2:
             cout << "CD>>\n";
@@ -225,7 +261,7 @@ int main()
         default:
             break;
         case 1:
-            X.incluirLivro(L);
+            X.incluirLivro(V);
             break;
         case 2:
             X.incluirCD(C);

@@ -1,0 +1,249 @@
+#ifndef _LOJA_H_
+#define _LOJA_H_
+
+#include <iostream>
+#include <string>
+#include <limits>
+#include "loja_heranca.h"
+
+using namespace std;
+
+class Produto
+{
+private:
+    string nome;
+    unsigned preco;
+public:
+    inline Produto(const char *N="", unsigned P=0): nome(N), preco(P) {}
+    istream &digitar(istream &I);
+    ostream &imprimir(ostream &O) const;
+    istream &ler(istream &I);
+    inline ostream &salvar(ostream &O) const {return imprimir(O);}
+};
+
+inline istream &operator>>(istream &I, Produto &X) {return X.digitar(I);} // dúvida, será que eu tenho que repetir essas chamadas nas classes livro, cd e dvd?
+inline ostream &operator<<(ostream &O, Produto &X) {return X.imprimir(O);}
+
+// =========================================
+// Inclua aqui as classes Livro, CD e DVD
+// =========================================
+
+class Livro: public Produto
+{
+private:
+    string autor;
+public:
+    inline Livro(): Produto(), autor("") {}
+    inline Livro (char N, unsigned P, char A): Produto(N,P), autor(A) {}
+    istream &digitar(istream &I);
+    ostream &imprimir(ostream &O) const;
+    istream &ler(istream &I);
+    inline ostream &salvar(ostream &O) const {return imprimir(O);}
+    
+};
+
+class CD: public Produto
+{
+private:
+    unsigned faixas;
+public:
+    inline CD(): Produto(), faixas(0) {}
+    inline Livro (char N, unsigned P, unsigned F): Produto(N,P), faixas(F) {}
+    istream &digitar(istream &I);
+    ostream &imprimir(ostream &O) const;
+    istream &ler(istream &I);
+    inline ostream &salvar(ostream &O) const {return imprimir(O);}
+    
+};
+
+class DVD: public Produto
+{
+private:
+    unsigned duracao;
+public:
+    inline Livro(): Produto(), duracao(0) {}
+    inline Livro (char N, unsigned P, unsigned D): Produto(N,P), duracao(D) {}
+    istream &digitar(istream &I);
+    ostream &imprimir(ostream &O) const;
+    istream &ler(istream &I);
+    inline ostream &salvar(ostream &O) const {return imprimir(O);}
+};
+
+class ListaLivro
+{
+private:
+    Livro *x;
+    unsigned N;
+    void criar(unsigned numL);
+    void copiar(const ListaLivro &L);
+    void limpar();
+public:
+    inline ListaLivro(): N(0), x(NULL) {}
+    inline ListaLivro(const ListaLivro &L) {copiar(L);}
+    inline ~ListaLivro(void) {limpar();}
+    inline void operator=(const ListaLivro &L) {if (this!=&L) {limpar(); copiar(L);}}
+    void incluir(const Livro &L);
+    void excluir(unsigned id);
+    void imprimir() const;
+    void ler(istream &I);
+    void salvar(ostream &O) const;
+};
+
+// =========================================
+// Inclua aqui as classes ListaCD e ListaDVD
+// =========================================
+
+class ListaCD
+{
+private:
+    CD *x;
+    unsigned N;
+    void criar(unsigned numCD);
+    void copiar(const ListaCD &L);
+    void limpar();
+public:
+    inline ListaCD(): N(0), x(NULL) {}
+    inline ListaCD(const ListaCD &L) {copiar(L);}
+    inline ~ListaCD(void) {limpar();}
+    inline void operator=(const ListaCD &L) {if (this!=&L) {limpar(); copiar(L);}}
+    void incluir(const CD &L);
+    void excluir(unsigned id);
+    void imprimir() const;
+    void ler(istream &I);
+    void salvar(ostream &O) const;
+};
+
+class ListaDVD
+{
+private:
+    DVD *x;
+    unsigned N;
+    void criar(unsigned numDVD);
+    void copiar(const ListaDVD &L);
+    void limpar();
+public:
+    inline ListaDVD(): N(0), x(NULL) {}
+    inline ListaDVD(const ListaDVD &L) {copiar(L);}
+    inline ~ListaDVD(void) {limpar();}
+    inline void operator=(const ListaDVD &L) {if (this!=&L) {limpar(); copiar(L);}}
+    void incluir(const DVD &L);
+    void excluir(unsigned id);
+    void imprimir() const;
+    void ler(istream &I);
+    void salvar(ostream &O) const;
+};
+
+class Loja
+{
+private:
+    ListaLivro LL;
+    ListaCD LC;
+    ListaDVD LD;
+public:
+    inline Loja(): LL(), LC(), LD() {}
+    inline void incluirLivro(const Livro &X) {LL.incluir(X);}
+    inline void excluirLivro(unsigned id) {LL.excluir(id);}
+    inline void incluirDVD(const DVD &X) {LD.incluir(X);}
+    inline void excluirDVD(unsigned id) {LD.excluir(id);}
+    inline void incluirCD(const CD &X) {LC.incluir(X);}
+    inline void excluirCD(unsigned id) {LC.excluir(id);}
+    void imprimir() const;
+    void ler(const char* arq);
+    void salvar(const char* arq) const;
+};
+
+int main()
+{
+    Loja X;
+    Livro L;
+    CD C;
+    DVD D;
+    string A;
+    int opcao(0);
+    unsigned id(0);
+
+    cout << "CONTROLE DE ACERVO\n\n";
+    do
+    {
+        do{
+            cout << "1/-1 - Incluir/excluir livro\n";
+            cout << "2/-2 - Incluir/excluir CD\n";
+            cout << "3/-3 - Incluir/excluir DVD\n";
+            cout << "4 - Imprimir acervo em tela\n";
+            cout << "5 - Ler acervo de arquivo\n";
+            cout << "6 - Salvar acervo em arquivo\n";
+            cout << "0 - Sair\n";
+            cout << "Opcao: ";
+            cin >> opcao;
+        } while (opcao<-3 || opcao>6);
+
+        // Entrada de dados, de acordo com a opcao
+        switch (opcao)
+        {
+        case -3:
+        case -2:
+        case -1:
+            cout << "Id do objeto a excluir: ";
+            cin >> id;
+            break;
+        case 5:
+        case 6:
+            cin.ignore(numeric_limits<streamsize>::max(),'\n');
+            cout << "Nome do arquivo: ";
+            getline(cin,A);
+            break;
+        case 1:
+            cout << "LIVRO>>\n";
+            cin >> L;
+            break;
+        case 2:
+            cout << "CD>>\n";
+            cin >> C;
+            break;
+        case 3:
+            cout << "DVD>>\n";
+            cin >> D;
+            break;
+        case 4:
+        default:
+            break;
+        }
+
+        // Funcao a ser chamada, de acordo com a opcao
+        switch (opcao)
+        {
+        case -3:
+            X.excluirDVD(id);
+            break;
+        case -2:
+            X.excluirCD(id);
+            break;
+        case -1:
+            X.excluirLivro(id);
+            break;
+        case 0:
+        default:
+            break;
+        case 1:
+            X.incluirLivro(L);
+            break;
+        case 2:
+            X.incluirCD(C);
+            break;
+        case 3:
+            X.incluirDVD(D);
+            break;
+        case 4:
+            X.imprimir();
+            break;
+        case 5:
+            X.ler(A.c_str());
+            break;
+        case 6:
+            X.salvar(A.c_str());
+            break;
+        }
+    } while (opcao!=0);
+};
+
+#endif // _LOJA_H_

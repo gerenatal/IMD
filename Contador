@@ -1,0 +1,77 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity flipflopJK is
+port(
+	J, K, clk, clear, preset : in std_logic;
+	Q, Qbar : out std_logic
+);
+end flipflopJK;
+
+architecture flipflopJK of flipflopJK is
+signal qsignal : std_logic;
+begin
+	process(clk, clear, preset)
+	begin
+			if(clear = '0') then
+				qsignal <= '0';
+			elsif(preset = '0') then
+				qsignal <= '1';
+			elsif(clk'event and clk='0')	then
+				if(J='0' and K='1') then
+					qsignal <= '1';
+				elsif(J='1' and K='0') then
+					qsignal <= '0';
+				elsif(J='0' and K = '0') then
+					qsignal <= not qsignal;
+				end if;
+			end if;
+	end process;
+	Q <= qsignal;
+	Qbar <= not qsignal;
+end flipflopJK;
+
+
+
+
+
+
+
+
+
+
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity contador is
+port(
+	clockcont : in std_logic;
+	Qc : out std_logic_vector(3 downto 0)
+);
+end contador;
+
+architecture contador of contador is
+
+component flipflopJK is
+port(
+	J, K, clk, clear, preset : in std_logic;
+	Q, Qbar : out std_logic
+);
+end component;
+
+signal qs : std_logic_vector(3 downto 0);
+signal S : std_logic;
+
+begin
+
+	FF00 : flipflopJK port map ('0', '0', clockcont, not S, '1', qs(0));
+	FF01 : flipflopJK port map ('0', '0', qs (0), not S, '1', qs(1));
+	FF02 : flipflopJK port map ('0', '0', qs (1), not S, '1', qs(2));
+	FF03 : flipflopJK port map ('0', '0', qs (2), not S, '1', qs(3));
+	S <= not qs (0) and qs (1) and not qs(2) and qs(3);
+	Qc <= qs;
+	
+	
+	
+
+end contador;

@@ -1,0 +1,38 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity contador is
+port(
+	clockcont : in std_logic;
+	qc : out std_logic_vector(2 downto 0)
+);
+end contador;
+
+architecture contador of contador is
+
+component flipflopJK is
+port(
+	J, K, clk, clear, preset: in std_logic;
+	Q, Qbar : out std_logic
+);
+end component;
+
+signal js : std_logic_vector(2 downto 0);
+signal ks : std_logic_vector(2 downto 0);
+signal qs : std_logic_vector(2 downto 0);
+
+begin
+
+	FF00 : flipflopJK port map (js(0), ks(0), clockcont, '1', '1', qs(0));
+	FF01 : flipflopJK port map (js(1), ks(1), clockcont, '1', '1', qs(1));
+	FF02 : flipflopJK port map (js(2), ks(2), clockcont, '1', '1', qs(2));
+	
+	js(2) <= qs(2) or not qs(1) or not qs(0);
+	ks(2) <= not (qs(2) and qs(1) and qs(0));
+	js(1) <= not qs(1) and not qs(0);
+	ks(1) <= qs(1) and not qs(0);
+	js(0) <= qs(0);
+	ks(0) <= not qs(0);
+	qc <= qs;
+	
+end contador;

@@ -60,9 +60,9 @@ begin
 	jk(1) <= not qs(1) and qs(0);
 	kj(1) <= qs(1) and qs(0);
 		
-	sc(2) <= ss and qs(2);
-	sc(1) <= ss and qs(1);
-	sc(0) <= ss and qs(0);
+	sc(2) <= ss xor qs(2);
+	sc(1) <= ss xor qs(1);
+	sc(0) <= ss xor qs(0);
 
 	qc <= qs;
 	s <= ss;

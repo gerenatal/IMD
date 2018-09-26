@@ -29,6 +29,7 @@ signal kc : std_logic_vector(2 downto 1);
 signal jk : std_logic_vector(2 downto 1);
 signal kj : std_logic_vector(2 downto 1);
 
+signal sc : std_logic_vector(2 downto 0);
 signal ss : std_logic;
 
 begin
@@ -58,6 +59,10 @@ begin
 	kj(2) <= not qs(2) or qs(1) or qs(0);
 	jk(1) <= not qs(1) and qs(0);
 	kj(1) <= qs(1) and qs(0);
+		
+	sc(2) <= ss and qs(2);
+	sc(1) <= ss and qs(1);
+	sc(0) <= ss and qs(0);
 
 	qc <= qs;
 	s <= ss;

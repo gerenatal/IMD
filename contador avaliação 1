@@ -1,0 +1,65 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity contador is
+port(
+	clockcont, s : in std_logic;
+	qc : out std_logic_vector(2 downto 0)
+);
+end contador;
+
+architecture contador of contador is
+
+component flipflopJK is
+port(
+	J, K, clk, clear, preset: in std_logic;
+	Q, Qbar : out std_logic
+);
+end component;
+
+signal qs : std_logic_vector(2 downto 0);
+signal js : std_logic_vector(2 downto 0);
+signal ks : std_logic_vector(2 downto 0);
+
+signal jd : std_logic_vector(2 downto 1);
+signal kd : std_logic_vector(2 downto 1);
+signal jc : std_logic_vector(2 downto 1);
+signal kc : std_logic_vector(2 downto 1);
+
+signal jk : std_logic_vector(2 downto 1);
+signal kj : std_logic_vector(2 downto 1);
+
+signal ss : std_logic;
+
+begin
+
+	FF00 : flipflopJK port map (js(0), ks(0), clockcont, '1', '1', qs(0));
+	FF01 : flipflopJK port map (js(1), ks(1), clockcont, '1', '1', qs(1));
+	FF02 : flipflopJK port map (js(2), ks(2), clockcont, '1', '1', qs(2));
+	
+	jd(2) <= ss and jk(2);
+	kc(2) <= not ss and jk(2);
+	kd(2) <= ss and kj(2);
+	jc(2) <= not ss and kj(2);
+	jd(1) <= ss and jk(1);
+	kc(1) <= not ss and jk(1);
+	kd(1) <= ss and kj(1);
+	jc(1) <= not ss and kj(1);
+	
+
+	js(2) <= jd(2) or jc(2);
+	ks(2) <= kd(2) or kc(2);
+	js(1) <= jd(1) or jc(1);
+	ks(1) <= kd(1) or kc(1);
+	js(0) <= qs(0);
+	ks(0) <= not qs(0);
+
+	jk(2) <= qs(2) or qs(1) or qs(0);
+	kj(2) <= not qs(2) or qs(1) or qs(0);
+	jk(1) <= not qs(1) and qs(0);
+	kj(1) <= qs(1) and qs(0);
+
+	qc <= qs;
+	s <= ss;
+	
+end contador;

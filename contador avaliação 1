@@ -38,14 +38,14 @@ begin
 	FF01 : flipflopJK port map (js(1), ks(1), clockcont, '1', '1', qs(1));
 	FF02 : flipflopJK port map (js(2), ks(2), clockcont, '1', '1', qs(2));
 	
-	jd(2) <= ss and jk(2);
-	kc(2) <= not ss and jk(2);
-	kd(2) <= ss and kj(2);
-	jc(2) <= not ss and kj(2);
-	jd(1) <= ss and jk(1);
-	kc(1) <= not ss and jk(1);
-	kd(1) <= ss and kj(1);
-	jc(1) <= not ss and kj(1);
+	jd(2) <= not ss and jk(2);
+	kc(2) <= ss and jk(2);
+	kd(2) <= not ss and kj(2);
+	jc(2) <= ss and kj(2);
+	jd(1) <= not ss and jk(1);
+	kc(1) <= ss and jk(1);
+	kd(1) <= not ss and kj(1);
+	jc(1) <= ss and kj(1);
 	
 
 	js(2) <= jd(2) or jc(2);

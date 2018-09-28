@@ -82,6 +82,7 @@ begin
 	--qc <= qs;
 	s <= ss;
 	enable <= es;
+	reset <= rs;
 	
 	ds(0) <= not( qs(2) and qs(0) or not qs(2) and not qs(0) or qs(1));
 	ds(1) <= not( qs(2) xor qs(1) or not qs(0) and (qs(2) or q(1)));

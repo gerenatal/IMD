@@ -25,13 +25,14 @@ signal ave, aam, avo, gve, gam, gvo : std_logic;
 
 begin
 
-	FF00 : flipflopJK port map (js(0), ks(0), clockcont, '1', '1', qs(0));
-	FF01 : flipflopJK port map (js(1), ks(1), clockcont, '1', '1', qs(1));
-	FF02 : flipflopJK port map (js(2), ks(2), clockcont, '1', '1', qs(2));
+  FF00 : flipflopJK port map (js(0), ks(0), clockcont, '1', '1', qs(0));
+  FF01 : flipflopJK port map (js(1), ks(1), clockcont, '1', '1', qs(1));
+  FF02 : flipflopJK port map (js(2), ks(2), clockcont, '1', '1', qs(2));
   FF03 : flipflopJK port map (js(3), ks(3), clockcont, '1', '1', qs(3));
   FF04 : flipflopJK port map (js(4), ks(4), clockcont, '1', '1', qs(4));
   FF05 : flipflopJK port map (js(5), ks(5), clockcont, '1', '1', qs(5));
 	
+  //Contando de 0 a 45:
   js(5) <= not qs(4) or not qs(3) or not qs(2) or not qs (1) or not qs(0);
   ks(5) <= not qs(3) or not qs(2) or not qs(0);
   js(4) <= not qs(3) or not qs(2) or not qs(1) or not qs(0);
@@ -54,20 +55,20 @@ begin
   gvo <= not qs(5) and not qs(4) or not(qs(5) and qs(3) and qs(2)) or not(qs(5) and qs(3) and qs(1)) or not(qs(5) and qs(3) and qs(0));
   
   //situação B:
-  ave <=
-  aam <=
-  avo <=
-  gve <=
-  gam <=
-  gvo <=
+  ave <= not(qs(5) and qs(4)) or not(qs(5) and qs(3)) or not(qs(5) and qs(2)) or not(qs(5) and qs(1));
+  aam <= qs(4) and qs(3) and qs(2) and qs(1) or (qs(5) and not qs(3) and not qs(2) and not qs(1) and not qs(0));
+  avo <= qs(5) and qs(0) or qs(5) and qs(1) or qs(5) and qs(2) or qs(5) and qs(3);
+  gve <= qs(5) and not qs(3) and qs(0) or qs(5) and qs(1) and not qs(0) or qs(5) and not qs(3) and qs(2) or qs(5) and qs(3) and not qs(2) and not qs(1);
+  gam <= qs(5) and qs(3) and qs(2) or qs(5) and qs(3) and qs(1) and qs(0);
+  gvo <= not qs(5) or not(qs(3) and qs(2) and qs(1) and qs(0));
   
   //situação C:
-  ave <=
-  aam <=
-  avo <=
-  gve <=
-  gam <=
-  gvo <=
+  ave <= 0;
+  aam <= not qs(0);
+  avo <= 0;
+  gve <= 0;
+  gam <= not qs(0);
+  gvo <= 0;
  
 	jd(2) <= qs(2) or qs(1) or qs(0);
 	kd(2) <= not qs(2) or qs(1) or qs(0);

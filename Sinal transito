@@ -3,8 +3,8 @@ use ieee.std_logic_1164.all;
 
 entity contador is
 port(
-	clockcont, s, enable, reset : in std_logic;
-	qc : out std_logic_vector(2 downto 0)
+	switch0, switch1, key0, key1 : in std_logic;
+	acaisinalve, acaisinalam, acaisinalvo, guasinalve, guasinalam, guasinalvo, velok, velmulta : out std_logic
 );
 end contador;
 
@@ -17,20 +17,40 @@ port(
 );
 end component;
 
-signal qs : std_logic_vector(5 downto 0);
-signal js : std_logic_vector(5 downto 0);
-signal ks : std_logic_vector(5 downto 0);
+signal qs : std_logic_vector(7 downto 0);
+signal js : std_logic_vector(7 downto 0);
+signal ks : std_logic_vector(7 downto 0);
 
-signal ave, aam, avo, gve, gam, gvo, sita, sitb, sitc : std_logic;
+signal ave, aam, avo, gve, gam, gvo, sita, sitb, sitc, vok, vmult, pini, pfim : std_logic;
 
 begin
 
+  --flipflops para os sinais
   FF00 : flipflopJK port map (js(0), ks(0), clockcont, '1', '1', qs(0));
   FF01 : flipflopJK port map (js(1), ks(1), clockcont, '1', '1', qs(1));
   FF02 : flipflopJK port map (js(2), ks(2), clockcont, '1', '1', qs(2));
   FF03 : flipflopJK port map (js(3), ks(3), clockcont, '1', '1', qs(3));
   FF04 : flipflopJK port map (js(4), ks(4), clockcont, '1', '1', qs(4));
   FF05 : flipflopJK port map (js(5), ks(5), clockcont, '1', '1', qs(5));
+  
+  --flipflops para o radar de velocidade
+  FF06 : flipflopJK port map (js(6), ks(6), clockcont, '1', '1', qs(6));
+  FF07 : flipflopJK port map (js(7), ks(7), clockcont, '1', '1', qs(7));
+  
+  --direcionando as entradas pros signals
+  acaisinalve <= ave;
+  acaisinalam <= aam;
+  acaisinalvo <= avo;
+  guasinalve <= gve;
+  guasinalam <= gam;
+  guasinalvo <= gvo;
+  sita <= not switch0 and not switch1;
+  sitb <= not switch0 and switch1;
+  sitc <= switch0 and not switch1;
+  pini <= key0;
+  pfim <= key1;
+  velok <= vok;
+  velmulta <= vmult;
 	
   --Contando de 0 a 45:
   js(5) <= not qs(4) or not qs(3) or not qs(2) or not qs (1) or not qs(0);
@@ -45,6 +65,12 @@ begin
   ks(1) <= not qs(0);
   Js(0) <= 0;
   ks(0) <= 0;
+  
+  --Contando de 0 até 3 para o radar
+  js(7) <= not qs(6);
+  ks(7) <= qs(7);
+  js(6) <= qs(6);
+  ks(6) <= qs(7);
   
   --situação A:
   ave <= sita and (not(qs(5) and qs(4)) or not(qs(5) and qs(3) and qs(2)));
@@ -69,14 +95,19 @@ begin
   gve <= sitc;
   gam <= sitc and not qs(0);
   gvo <= sitc;
+  
+  --radar de velocidade
+  vok <= not qs(6) or not qs(7);
+  vmult <= qs(6) and qs(7);
  
-	--ds(0) <= not( (qs(2) and qs(0)) or (not qs(2) and not qs(0)) or qs(1));
-	--ds(1) <= not( not qs(2) or (not qs(1) and not qs(0)) or (qs(1) and qs(0)));
-	--ds(2) <= not( qs(2) or not qs(1) or qs(0));
-	--ds(3) <= not( (qs(2) and not qs(1) and qs(0)) or (not qs(2) and not qs(0)) or (qs(1) and not qs(0)) or (not qs(2) and qs(1)));
-	--ds(4) <= not( (not qs(2) and not qs(0)) or (qs(1) and not qs(0)));
-	--ds(5) <= not( (not qs(1) and not qs(0)) or (qs(2) and not qs(0)) or (qs(2) and not qs(1)));
-	--ds(6) <= not( (qs(2) xor qs(1)) or (qs(0) and (qs(2) or qs(1))));
-	--d <= ds;
+ --deixei aqui só se eu precisar
+--ds(0) <= not( (qs(2) and qs(0)) or (not qs(2) and not qs(0)) or qs(1));
+--ds(1) <= not( not qs(2) or (not qs(1) and not qs(0)) or (qs(1) and qs(0)));
+--ds(2) <= not( qs(2) or not qs(1) or qs(0));
+--ds(3) <= not( (qs(2) and not qs(1) and qs(0)) or (not qs(2) and not qs(0)) or (qs(1) and not qs(0)) or (not qs(2) and qs(1)));
+--ds(4) <= not( (not qs(2) and not qs(0)) or (qs(1) and not qs(0)));
+--ds(5) <= not( (not qs(1) and not qs(0)) or (qs(2) and not qs(0)) or (qs(2) and not qs(1)));
+--ds(6) <= not( (qs(2) xor qs(1)) or (qs(0) and (qs(2) or qs(1))));
+--d <= ds;
 	
 end contador;

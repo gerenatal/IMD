@@ -1,0 +1,53 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity registradorDeslocamento is
+port(
+	clockcont, edir, eesq, clearr : in std_logic;
+	cc : in std_logic_vector(1 downto 0);
+	ic : in std_logic_vector(3 downto 0);
+	qc : out std_logic_vector(3 downto 0)
+);
+end registradorDeslocamento;
+
+architecture registrador of registradorDeslocamento is
+
+component flipflopJK is
+port(
+	J, K, clk, clear, preset: in std_logic;
+	Q, Qbar : out std_logic
+);
+end component;
+
+signal js : std_logic_vector(3 downto 0);
+signal ks : std_logic_vector(3 downto 0);
+signal qs : std_logic_vector(3 downto 0);
+signal cs : std_logic_vector(1 downto 0);
+signal is : std_logic_vector(3 downto 0);
+signal sedir, seesq, sclear : std_logic;
+
+begin
+
+	FF00 : flipflopJK port map (js(0), ks(0), clockcont, sclear, '1', qs(0));
+	FF01 : flipflopJK port map (js(1), ks(1), clockcont, sclear, '1', qs(1));
+	FF02 : flipflopJK port map (js(2), ks(2), clockcont, sclear, '1', qs(2));
+	FF03 : flipflopJK port map (js(3), ks(3), clockcont, sclear, '1', qs(3));
+	
+	ks(3) <= (not cs(0) and not cs(1) and qs(3)) or (not cs(0) and cs(1) and qs(2)) or (cs(0) and not cs(1) and sedir) or (cs(0) and cs(1) and is(3));
+	ks(2) <= (not cs(0) and not cs(1) and qs(2)) or (not cs(0) and cs(1) and qs(1)) or (cs(0) and not cs(1) and qs(3)) or (cs(0) and cs(1) and is(2));
+	ks(1) <= (not cs(0) and not cs(1) and qs(1)) or (not cs(0) and cs(1) and qs(0)) or (cs(0) and not cs(1) and qs(2)) or (cs(0) and cs(1) and is(1));
+	ks(0) <= (not cs(0) and not cs(1) and qs(0)) or (not cs(0) and cs(1) and seesq) or (cs(0) and not cs(1) and qs(1)) or (cs(0) and cs(1) and is(0));
+	
+	js(3) <= not ks(3);
+	js(2) <= not ks(2);
+	js(1) <= not ks(1);
+	js(0) <= not ks(0);
+	
+	qc <= qs;
+	is <= ic;
+	cs <= cc;
+	sedir <= edir;
+	seesq <= eesq;
+	sclear <= clearr;
+		
+end registrador;
